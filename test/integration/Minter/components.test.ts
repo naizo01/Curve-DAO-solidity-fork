@@ -123,46 +123,46 @@ describe("Minter components", function () {
   }
 
   async function showGaugeInfo() {
-    console.log("Gauge info----");
-    console.log(
-      "GaugeWeight: ",
-      (await gaugeController.getGaugeWeight(liquidityGauge.address)).toString()
-    );
-    console.log(
-      "TypeWeight: ",
-      (await gaugeController.getTypeWeight(0)).toString()
-    );
-    console.log(
-      "TotalWeight: ",
-      (await gaugeController.getTotalWeight()).toString()
-    );
-    console.log(
-      "TypeWeightSum: ",
-      (await gaugeController.getWeightsSumPerType(0)).toString()
-    );
-    console.log("TimeTotal: ", (await gaugeController.timeTotal()).toString());
-    console.log(
-      "pointsTotal: ",
-      (
-        await gaugeController.pointsTotal(
-          (await gaugeController.timeTotal()).toString()
-        )
-      ).toString()
-    );
-    console.log(
-      "gaugeRelativeWeight: ",
-      (
-        await gaugeController.gaugeRelativeWeight(
-          liquidityGauge.address,
-          await time.latest()
-        )
-      ).toString()
-    );
-    console.log(
-      "TotalSupply: ",
-      (await liquidityGauge.totalSupply()).toString()
-    );
-    console.log("----");
+    // console.log("Gauge info----");
+    // console.log(
+    //   "GaugeWeight: ",
+    //   (await gaugeController.getGaugeWeight(liquidityGauge.address)).toString()
+    // );
+    // console.log(
+    //   "TypeWeight: ",
+    //   (await gaugeController.getTypeWeight(0)).toString()
+    // );
+    // console.log(
+    //   "TotalWeight: ",
+    //   (await gaugeController.getTotalWeight()).toString()
+    // );
+    // console.log(
+    //   "TypeWeightSum: ",
+    //   (await gaugeController.getWeightsSumPerType(0)).toString()
+    // );
+    // console.log("TimeTotal: ", (await gaugeController.timeTotal()).toString());
+    // console.log(
+    //   "pointsTotal: ",
+    //   (
+    //     await gaugeController.pointsTotal(
+    //       (await gaugeController.timeTotal()).toString()
+    //     )
+    //   ).toString()
+    // );
+    // console.log(
+    //   "gaugeRelativeWeight: ",
+    //   (
+    //     await gaugeController.gaugeRelativeWeight(
+    //       liquidityGauge.address,
+    //       await time.latest()
+    //     )
+    //   ).toString()
+    // );
+    // console.log(
+    //   "TotalSupply: ",
+    //   (await liquidityGauge.totalSupply()).toString()
+    // );
+    // console.log("----");
   }
 
   for (let i = 0; i < NUMBER_OF_ATTEMPTS; i++) {
@@ -211,30 +211,30 @@ describe("Minter components", function () {
       const weight3 = Math.floor(weight2 + (durations[2] - durations[1]) * 3);
       const totalWeight = weight1 + weight2 + weight3;
 
-      console.log(
-        `Total minted: ${totalMinted.toString()}, Total Weight: ${totalWeight.toString()}`
-      );
-      console.log(
-        `Balance 1: ${balances[0]} (${balances[0]
-          .mul(SCALE)
-          .div(totalMinted)}) Weight 1: ${weight1.toString()} (${
-          (100 * weight1) / totalWeight
-        }%)`
-      );
-      console.log(
-        `Balance 2: ${balances[1]} (${balances[1]
-          .mul(SCALE)
-          .div(totalMinted)}) Weight 2: ${weight2.toString()} (${
-          (100 * weight2) / totalWeight
-        }%)`
-      );
-      console.log(
-        `Balance 3: ${balances[2]} (${balances[2]
-          .mul(SCALE)
-          .div(totalMinted)}) Weight 3: ${weight3.toString()} (${
-          (100 * weight3) / totalWeight
-        }%)`
-      );
+      // console.log(
+      //   `Total minted: ${totalMinted.toString()}, Total Weight: ${totalWeight.toString()}`
+      // );
+      // console.log(
+      //   `Balance 1: ${balances[0]} (${balances[0]
+      //     .mul(SCALE)
+      //     .div(totalMinted)}) Weight 1: ${weight1.toString()} (${
+      //     (100 * weight1) / totalWeight
+      //   }%)`
+      // );
+      // console.log(
+      //   `Balance 2: ${balances[1]} (${balances[1]
+      //     .mul(SCALE)
+      //     .div(totalMinted)}) Weight 2: ${weight2.toString()} (${
+      //     (100 * weight2) / totalWeight
+      //   }%)`
+      // );
+      // console.log(
+      //   `Balance 3: ${balances[2]} (${balances[2]
+      //     .mul(SCALE)
+      //     .div(totalMinted)}) Weight 3: ${weight3.toString()} (${
+      //     (100 * weight3) / totalWeight
+      //   }%)`
+      // );
 
       expect(
         approx(
@@ -294,30 +294,30 @@ describe("Minter components", function () {
         ethers.BigNumber.from(0)
       );
 
-      console.log(
-        `Total deposited: ${totalDeposited.toString()}, Total minted: ${totalMinted.toString()}`
-      );
-      console.log(
-        `Balance 1: ${balances[0]} (${balances[0]
-          .mul(SCALE)
-          .div(totalMinted)}) Deposited 1: ${stAmounts[0].toString()} (${
-          (100 * stAmounts[0]) / totalDeposited
-        }%)`
-      );
-      console.log(
-        `Balance 2: ${balances[1]} (${balances[1]
-          .mul(SCALE)
-          .div(totalMinted)}) Deposited 2: ${stAmounts[1].toString()} (${
-          (100 * stAmounts[1]) / totalDeposited
-        }%)`
-      );
-      console.log(
-        `Balance 3: ${balances[2]} (${balances[2]
-          .mul(SCALE)
-          .div(totalMinted)}) Deposited 3: ${stAmounts[2].toString()} (${
-          (100 * stAmounts[2]) / totalDeposited
-        }%)`
-      );
+      // console.log(
+      //   `Total deposited: ${totalDeposited.toString()}, Total minted: ${totalMinted.toString()}`
+      // );
+      // console.log(
+      //   `Balance 1: ${balances[0]} (${balances[0]
+      //     .mul(SCALE)
+      //     .div(totalMinted)}) Deposited 1: ${stAmounts[0].toString()} (${
+      //     (100 * stAmounts[0]) / totalDeposited
+      //   }%)`
+      // );
+      // console.log(
+      //   `Balance 2: ${balances[1]} (${balances[1]
+      //     .mul(SCALE)
+      //     .div(totalMinted)}) Deposited 2: ${stAmounts[1].toString()} (${
+      //     (100 * stAmounts[1]) / totalDeposited
+      //   }%)`
+      // );
+      // console.log(
+      //   `Balance 3: ${balances[2]} (${balances[2]
+      //     .mul(SCALE)
+      //     .div(totalMinted)}) Deposited 3: ${stAmounts[2].toString()} (${
+      //     (100 * stAmounts[2]) / totalDeposited
+      //   }%)`
+      // );
 
       expect(
         approx(

@@ -134,7 +134,7 @@ describe("GaugeController", function () {
     await gaugeController.connect(accounts[0]).addType("Type!", stTypeWeight);
     typeWeights.push(stTypeWeight);
 
-    console.log(`ruleAddType --- stTypeWeight: ${stTypeWeight.toString()}`);
+    // console.log(`ruleAddType --- stTypeWeight: ${stTypeWeight.toString()}`);
 
     // Check
     await checkInvariants();
@@ -152,9 +152,9 @@ describe("GaugeController", function () {
     if (typeWeights.length === 0) return;
 
     gaugeType = gaugeType || Math.floor(stType * typeWeights.length);
-    console.log(
-      `ruleAddGauge --- gaugeType: ${gaugeType}, stGaugeWeight: ${stGaugeWeight.toString()}`
-    );
+    // console.log(
+    //   `ruleAddGauge --- gaugeType: ${gaugeType}, stGaugeWeight: ${stGaugeWeight.toString()}`
+    // );
     const LiquidityGauge = await ethers.getContractFactory("LiquidityGaugeV6");
     const gauge = await LiquidityGauge.deploy(
       mockLpToken.address,
@@ -224,32 +224,32 @@ describe("GaugeController", function () {
   }
 
   async function showStates() {
-    console.log("States ------------------------");
-    console.log("typeWeights.length: ", typeWeights.length);
-    console.log("gauges.length: ", gauges.length);
+    // console.log("States ------------------------");
+    // console.log("typeWeights.length: ", typeWeights.length);
+    // console.log("gauges.length: ", gauges.length);
     for (let i = 0; i < typeWeights.length; i++) {
-      console.log(
-        `getWeightsSumPerType(${i}): ${(
-          await gaugeController.getWeightsSumPerType(i)
-        ).toString()}`
-      );
+      // console.log(
+      //   `getWeightsSumPerType(${i}): ${(
+      //     await gaugeController.getWeightsSumPerType(i)
+      //   ).toString()}`
+      // );
     }
     const totalWeight = typeWeights.reduce((total, weight, idx) => {
       return total.add(_gaugeWeight(idx).mul(weight));
     }, BigNumber.from("0"));
-    console.log(`totalWeight: ${totalWeight.toString()}`);
+    // console.log(`totalWeight: ${totalWeight.toString()}`);
 
     for (let i = 0; i < gauges.length; i++) {
-      console.log(
-        `gaugeRelativeWeight(${gauges[i].contract.address}): ${(
-          await gaugeController.gaugeRelativeWeight(
-            gauges[i].contract.address,
-            await time.latest()
-          )
-        ).toString()}`
-      );
+      // console.log(
+      //   `gaugeRelativeWeight(${gauges[i].contract.address}): ${(
+      //     await gaugeController.gaugeRelativeWeight(
+      //       gauges[i].contract.address,
+      //       await time.latest()
+      //     )
+      //   ).toString()}`
+      // );
     }
-    console.log("------------------------");
+    // console.log("------------------------");
   }
 
   let func = ["ruleAddType", "ruleAddGauge"];

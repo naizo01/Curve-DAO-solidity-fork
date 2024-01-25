@@ -6,7 +6,7 @@ import {
 } from "@nomicfoundation/hardhat-network-helpers";
 import { BigNumber, Contract } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
-import { deployContracts } from "../../Helper";
+import { deployContracts } from "../../helper";
 import Constants from "../../Constants";
 
 describe("ERC20CRV", function () {

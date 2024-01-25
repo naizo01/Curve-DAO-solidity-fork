@@ -78,7 +78,7 @@ describe("VotingEscrow", function () {
 
   //--------------------------------------------- randomly excuted functions -----------------------------------------------------------//
   async function ruleCreateLock() {
-    console.log("ruleCreateLock");
+    // console.log("ruleCreateLock");
 
     //stAccount
     let rdm = Math.floor(Math.random() * 10); //0~9 integer
@@ -128,7 +128,7 @@ describe("VotingEscrow", function () {
   }
 
   async function ruleIncreaseAmount() {
-    console.log("ruleIncreaseAmount");
+    // console.log("ruleIncreaseAmount");
 
     //stAccount
     let rdm = Math.floor(Math.random() * 10); //0~9 integer
@@ -170,7 +170,7 @@ describe("VotingEscrow", function () {
   }
 
   async function ruleIncreaseUnlockTime() {
-    console.log("ruleIncreaseUnlockTime");
+    // console.log("ruleIncreaseUnlockTime");
 
     //stAccount
     let rdm = Math.floor(Math.random() * 10); //0~9 integer
@@ -217,7 +217,7 @@ describe("VotingEscrow", function () {
   }
 
   async function ruleWithdraw() {
-    console.log("ruleWithdraw");
+    // console.log("ruleWithdraw");
     // Withdraw tokens from the voting escrow.
 
     //stAccount
@@ -240,7 +240,7 @@ describe("VotingEscrow", function () {
   }
 
   async function ruleCheckpoint() {
-    console.log("ruleCheckpoint");
+    // console.log("ruleCheckpoint");
 
     //stAccount
     let rdm = Math.floor(Math.random() * 10); //0~9 integer
@@ -251,16 +251,16 @@ describe("VotingEscrow", function () {
   }
 
   async function ruleAdvanceTime() {
-    console.log("ruleAdvanceTime");
+    // console.log("ruleAdvanceTime");
 
     let stSleepDuration = Math.floor(Math.random() * 3) + 1; //1~4
 
     await time.increase(WEEK.mul(stSleepDuration).toNumber());
 
     if (stSleepDuration == 1) {
-      console.log("Time advanced");
+      // console.log("Time advanced");
     } else {
-      console.log("Time advanced");
+      // console.log("Time advanced");
     }
   }
 

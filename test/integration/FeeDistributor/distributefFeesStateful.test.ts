@@ -182,12 +182,12 @@ describe("FeeDistributor", function () {
     stWeeks = stWeeks || getRandomWeeks();
     stTime = stTime || getRandomsTime();
 
-    console.log(`
-    ruleNewLock --- 
-    stAcct: ${
-      stAcct.address
-    }, stAmount: ${stAmount.toString()}, stWeeks: ${stWeeks.toString()}, stTime: ${stTime.toString()}
-    `);
+    // console.log(`
+    // ruleNewLock --- 
+    // stAcct: ${
+    //   stAcct.address
+    // }, stAmount: ${stAmount.toString()}, stWeeks: ${stWeeks.toString()}, stTime: ${stTime.toString()}
+    // `);
 
     stTime.gt(0) && (await time.increase(stTime));
 
@@ -221,11 +221,11 @@ describe("FeeDistributor", function () {
     stWeeks = stWeeks || getRandomWeeks();
     stTime = stTime || getRandomsTime();
 
-    console.log(`
-    ruleExtendLock --- stAmount ${
-      stAcct.address
-    }, stAmount: ${stWeeks.toString()}, stTime: ${stTime.toString()}
-    `);
+    // console.log(`
+    // ruleExtendLock --- stAmount ${
+    //   stAcct.address
+    // }, stAmount: ${stWeeks.toString()}, stTime: ${stTime.toString()}
+    // `);
 
     stTime.gt(0) && (await time.increase(stTime));
 
@@ -267,11 +267,11 @@ describe("FeeDistributor", function () {
     stAmount = getRandomAmounts();
     stTime = getRandomsTime();
 
-    console.log(`
-    ruleIncreaseLockAmount --- stAmount ${
-      stAcct.address
-    }, stAmount: ${stAmount.toString()}, stTime: ${stTime.toString()}
-    `);
+    // console.log(`
+    // ruleIncreaseLockAmount --- stAmount ${
+    //   stAcct.address
+    // }, stAmount: ${stAmount.toString()}, stTime: ${stTime.toString()}
+    // `);
 
     stTime.gt(0) && (await time.increase(stTime));
 
@@ -294,9 +294,9 @@ describe("FeeDistributor", function () {
     stAcct = accounts[getRandomAccountNum()];
     stTime = getRandomsTime();
 
-    console.log(`
-    ruleClaimFees --- stAmount ${stAcct.address}, stTime: ${stTime.toString()}
-    `);
+    // console.log(`
+    // ruleClaimFees --- stAmount ${stAcct.address}, stTime: ${stTime.toString()}
+    // `);
 
     stTime.gt(0) && (await time.increase(stTime));
 
@@ -337,9 +337,9 @@ describe("FeeDistributor", function () {
     stAmount = stAmount || getRandomAmounts();
     stTime = stTime || getRandomsTime();
 
-    console.log(`
-    ruleTransferFees --- stAmount ${stAmount.toString()}, stTime: ${stTime.toString()}
-    `);
+    // console.log(`
+    // ruleTransferFees --- stAmount ${stAmount.toString()}, stTime: ${stTime.toString()}
+    // `);
 
     stTime.gt(0) && (await time.increase(stTime));
 
@@ -371,9 +371,9 @@ describe("FeeDistributor", function () {
     stAmount = stAmount || getRandomAmounts();
     stTime = stTime || getRandomsTime();
 
-    console.log(`
-    ruleTransferFeesWithoutCheckpoint --- stAmount ${stAmount.toString()}, stTime: ${stTime.toString()}
-    `);
+    // console.log(`
+    // ruleTransferFeesWithoutCheckpoint --- stAmount ${stAmount.toString()}, stTime: ${stTime.toString()}
+    // `);
 
     stTime.gt(0) && (await time.increase(stTime));
 
@@ -387,7 +387,7 @@ describe("FeeDistributor", function () {
     /*
     Claim fees for all accounts and verify that only dust remains.
     */
-    console.log("teardown----");
+    // console.log("teardown----");
     if (!(await distributor.canCheckpointToken())) {
       //if no token checkpoint occured, add 100,000 tokens prior to teardown
       await ruleTransferFees(

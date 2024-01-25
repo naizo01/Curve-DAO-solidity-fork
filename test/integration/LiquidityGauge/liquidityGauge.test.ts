@@ -386,8 +386,8 @@ describe("LiquidityGauge", function () {
       // 今、AliceはBobと同じ量を獲得した
       rewards_alice = await gauges[0].integrateFraction(accounts[1].address);
       rewards_bob = await gauges[0].integrateFraction(accounts[2].address);
-      console.log(rewards_alice);
-      console.log(rewards_bob);
+      // console.log(rewards_alice);
+      // console.log(rewards_bob);
       let d_alice = rewards_alice.sub(old_rewards_alice);
       let d_bob = rewards_bob.sub(old_rewards_bob);
 

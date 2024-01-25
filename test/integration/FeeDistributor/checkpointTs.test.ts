@@ -116,7 +116,7 @@ describe("FeeDistributor", function () {
 
       const expected = await votingEscrow.totalSupplyAt(weekBlock);
       const actual = await feeDistributor.veSupply(weekEpoch);
-      console.log(`expected: ${expected} actual: ${actual}`);
+      // console.log(`expected: ${expected} actual: ${actual}`);
       expect(actual).to.equal(expected);
     }
   });
