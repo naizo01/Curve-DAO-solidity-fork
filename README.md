@@ -1,6 +1,11 @@
-# Curve DAO コントラクト
+ # Curve DAO Contracts
 
-このプロジェクトは、Curve DAOのコントラクト群をSolidityで書き直したものです。Solidityのコントラクト、テストコードが含まれています。
+ This project is a Solidity rewrite of the Curve DAO contracts. It includes Solidity contracts and test codes.
+
+## install
+```shell
+npm install
+```
 
 ## test
 ```shell
