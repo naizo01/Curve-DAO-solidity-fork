@@ -327,4 +327,52 @@ for (uint256 i; i < 255; ) {
 
 この関数は、VotingEscrowコントラクトの核となる部分であり、ユーザーの投票権がどのように時間とともに変化するかを正確に追跡するために重要です。投票重みの計算と更新は、Curve DAO内での投票とガバナンスにおいて中心的な役割を果たします。
 
+## CRV コントラクト解説
 
+### `rate`変数の説明
+CRVトークンのコントラクト内の`rate`変数は、CRVトークンのマイニング（発行）率を表します。この値は、一定の時間間隔（エポックと呼ばれる）ごとに更新され、トークンの新規発行量を決定します。初期の`rate`は`(274_815_283 * 10 ** 18) / YEAR`として定義されており、これはCRVの初期供給量に基づいて計算されます。時間が経過するにつれて、この発行率は減少し、トークンのインフレを抑制する役割を果たします。
+
+### `_updateMiningParameters`関数の説明
+`_updateMiningParameters`は内部関数であり、CRVトークンのマイニングパラメータを更新するために使用されます。この関数は、新しいマイニングエポックの開始時に呼び出され、以下のステップでマイニング率（`rate`）と供給量を更新します。
+
+1. **エポックの更新**: `startEpochTime`変数が更新され、新しいエポックの開始時刻が設定されます。同時に、`miningEpoch`変数がインクリメントされ、新しいエポックを追跡します。
+
+```solidity
+uint256 _rate = rate;
+uint256 _startEpochSupply = startEpochSupply;
+
+startEpochTime += RATE_REDUCTION_TIME;
+miningEpoch += 1;
+
+```
+
+2. **マイニング率の計算**: 最初のエポックでは`rate`は`INITIAL_RATE`に設定されます。以降のエポックでは、現在の`rate`が`RATE_REDUCTION_COEFFICIENT (2 ** (1/4) * 1e18)`で割られることにより、新しいマイニング率が計算されます。これにより、トークンの発行量は徐々に減少します。
+
+```solidity
+if (_rate == 0) {
+    _rate = INITIAL_RATE;
+} else {
+    _startEpochSupply += _rate * RATE_REDUCTION_TIME;
+    startEpochSupply = _startEpochSupply;
+    _rate = (_rate * RATE_DENOMINATOR) / RATE_REDUCTION_COEFFICIENT;
+}
+
+rate = _rate;
+```
+
+この関数はCRVの供給量を調整し、インフレ率を制御する重要な役割を果たします。また、任意のアドレスがこの関数を呼び出すことができますが、エポックの更新が必要な時にのみ有効です。
+
+### `futureEpochTimeWrite`関数による`rate`の更新
+`futureEpochTimeWrite`関数は、CRVトークンの次のマイニングエポックの開始時刻を取得し、同時にマイニングパラメータを更新することができます。この関数は、Liquidity Gaugeのチェックポイントで呼び出されることがあり、運営による直接的な介入なしに、ユーザーのトランザクションによって`rate`が更新されるよう設計されています。これにより、CRVトークンの供給とマイニング率の透明性と公平性が保証されます。ユーザーがアクティブにエコシステムに参加することで、トークンの発行と流通が効率的かつ公正に管理されることが促進されます。
+
+```solidity
+function futureEpochTimeWrite() external returns (uint256) {
+    uint256 _startEpochTime = startEpochTime;
+    if (block.timestamp >= _startEpochTime + RATE_REDUCTION_TIME) {
+        _updateMiningParameters();
+        return startEpochTime + RATE_REDUCTION_TIME;
+    } else {
+        return _startEpochTime + RATE_REDUCTION_TIME;
+    }
+}
+```
