@@ -1,331 +1,241 @@
+
 # Curve DAO 解説
 
 Curve DAOで実装されている各コントラクトの概要と、それらがどのような処理を行っているのかを説明します。
 
 背景として、Curve DAOコントラクト群は、Vyperで記述されていますが、最近Solidityに書き換える機会がありました。そこで学んだことを備忘録も兼ねてまとめていきます。
 
-### CRVトークンのロックの意味
-CRVはCurve Financeのガバナンストークンであり、流動性マイニングを通じて手に入れることができます。しかし、CRVトークンをそのまま保持しているだけでは、Curve DAO内でのガバナンス権やその他の利益を得ることはできません。CRVトークンを特定の期間ロックし、その対価としてveCRVトークンを受け取ることにより、以下のような効力を得ることができます。
+## Curve DAOの主要な機能
 
-1. **投票力**: veCRVの保有量に応じた投票力を得ることができます。これにより、Curve DAO内での意思決定に影響を与えることが可能になります。
+1. **流動性提供者へのインセンティブ**: Curve DAOは、流動性提供者にCRVトークンを配布することで、プロトコルへの流動性提供を奨励します。
 
-2. **プロトコルからのFeeの一部**: プロトコルが得る手数料の50%をveCRVホルダーが受け取ることができます。
+2. **ガバナンス**: CRVトークンを保有するユーザーは、プロトコルの重要な意思決定に参加することができます。これには、手数料の変更、新しいプールの追加、プロトコルのアップグレードなどが含まれます。
 
-3. **Liquidity GaugeからのCRVブースト**: CRVトークンの報酬を増加させるブーストを受けることが可能になります。
+3. **手数料の分配**: Curve DAOは、プロトコルが徴収する手数料の一部をCRVトークンの保有者に分配します。これにより、トークン保有者はプロトコルの成長から直接的な恩恵を受けることができます。
+
+4. **ゲージ（Gauge）システム**: Curve DAOは、ゲージシステムを通じてCRV報酬の分配を制御します。ゲージは流動性プールごとに設定され、CRVトークンの保有者は投票を通じてゲージの重みを決定します。
 
 ### veCRVのメカニズム
+
 veCRVは、CRVトークンをVotingEscrowコントラクトにロックすることでのみ得られる特別なトークンです。これは購入や譲渡ができない特性を持ち、ユーザーは自分の保有しているCRVトークンを選択可能な期間（最大4年）でロックすることによりveCRVトークンを得ることができます。veCRVの量は、ロックされるCRVの量とロック期間に基づいて計算され、時間が経つほど線形に減少します。
 
 ### CRVロックのインセンティブ
+
 CRVをロックすることによる主なインセンティブは、Curve DAO内での影響力を増加させることです。veCRVを持つことにより、ユーザーはLiquidity GaugeのWeightを決定する権利を持つことになります。これにより、特定のプールがCRVトークンの排出量のどの程度を受け取るかを決定できます。したがって、ユーザーはCRVをロックすることで自分の投資を最大化するだけでなく、Curveエコシステム全体の方向性に影響を与えることができるのです。
 
+### ブーストとは
+
+ブーストは、veCRVを持つユーザーがCRV報酬を増やすことができる仕組みです。ユーザーがより多くのveCRVを持っているほど、そのユーザーのLiquidityGaugeにステークされたLPトークンに対するCRV報酬が最大2.5倍までブーストされます。これにより、長期的にCRVをロックしているユーザーは、より多くのCRV報酬を獲得することができます。
+
+
+
+
 ### CRV供給量とその分配
+
 CRVトークンの初期供給量は1.3億CRVで、最終的な供給量は3.03億CRVとされています。流動性提供者には62%が割り当てられており、流動性提供者が受け取るCRVの排出量は年々減少していきます。
 
 ### Liquidity Gaugeとブースティング
-CRVトークンは、ユーザーが流動性を提供することによって配布されます。この配布量はLiquidity Gaugeによって測定され、ユーザーはLPトークンをLiquidity Gaugeにデポジットする必要があります。CRVの受け取り量は、Liquidity GaugeのWeightに基づいて決定され、veCRVの保有量に応じてブーストされます。これにより、veCRVの保有者は、より多くのCRV報酬を受け取ることができます。
+
+CRVトークンは、ユーザーが流動性を提供することによって配布されます。この配布量はLiquidity Gaugeによって測定され、ユーザーはLPトークンをLiquidity Gaugeにデポジットする必要があります。CRVの受け取り量は、Liquidity GaugeのWeightに基づいて決定され、veCRVの保有量に応じてブーストされます。
+
+ブーストの仕組みは以下の通りです：
+
+1. ユーザーがveCRVをロックすることで、そのユーザーのLiquidity Gaugeにデポジットされたトークンの量に基づいて、CRV報酬が最大2.5倍までブーストされます。
+
+2. ブースト係数は、ユーザーのveCRVの量とロック期間に基づいて計算されます。ロック期間が長いほど、ブースト係数は高くなります。
+
+3. ブーストされたCRV報酬は、ユーザーがLiquidity Gaugeからトークンを引き出すか、ロック期間が終了するまで適用されます。
+
+このブースト機能により、veCRVの保有者は、より多くのCRV報酬を受け取ることができます。一方で、veCRVを持たないユーザーは、ブーストされていない通常のCRV報酬を受け取ることになります。
+
+### ゲージの重み付けと投票
+
+1. ゲージの重み付け：GaugeControllerは、各Liquidity Gaugeに重みを割り当てます。この重みは、そのゲージに割り当てられるCRV報酬の量を決定します。重みは、veCRVホルダーの投票によって決定され、定期的に更新されます。
+
+2. ゲージのタイプ管理：GaugeControllerは、ゲージをタイプ別に分類し、各タイプに重みを割り当てます。これにより、特定のタイプのゲージ（例えば、ステーブルコインプールのゲージ）に対して、より多くのCRV報酬を割り当てることができます。
+
+3. CRV報酬の計算：GaugeControllerは、各ゲージに割り当てられたCRV報酬の量を計算します。この計算は、ゲージの重み、タイプの重み、およびCRVの総排出量に基づいて行われます。
+
+4. ゲージの追加と管理：GaugeControllerは、新しいゲージの追加や既存のゲージの管理を行います。これには、ゲージのアドレスの管理、ゲージのタイプの割り当て、およびゲージの有効化/無効化が含まれます。
+
+5. ユーザーの投票の管理：GaugeControllerは、veCRVホルダーによるゲージへの投票を管理します。各ユーザーは、自分のveCRVの量に応じて投票権を持ち、それを使って特定のゲージに重みを割り当てることができます。
+
+GaugeControllerは、これらの処理を通じて、CRV報酬の分配を制御し、ユーザーにゲージへの投票を行うインセンティブを与えています。これにより、Curveプロトコルの流動性が最適化され、ユーザーにとって最も有益なプールに報酬が配分されるようになっています。
 
 ## Curve DAO 各コントラクトの概要
 
-まず、Curve DAOの全体構成を理解するために、それぞれのコントラクトの役割と機能について説明します。
+Curve DAOの全体構成を理解するために、それぞれのコントラクトの役割と機能について説明します。
+
+以下の図は、Curve DAOの全体構成を示しています。
+![Curve DAO Overview](https://raw.githubusercontent.com/curvefi/curve-dao-contracts/567927551903f71ce5a73049e077be87111963cc/doc/dao-overview.svg)
 
 ### CRV.sol
-CRV.solはERC-20標準に基づくトークンコントラクトです。供給量は時間が経つにつれて減少し、これによりインフレを防ぐ設計が施されています。CRVトークンの供給率は年間を通じて徐々に下がり、新規トークンの発行量を調整します。
+
+CRV.solは、Curve FinanceのネイティブトークンであるCRVを管理するコントラクトです。CRVは、ユーザーが流動性を提供することで獲得できるトークンで、Curve DAOでの投票権を持ちます。CRVの総供給量は決まっていて、時間が経つにつれて新しく発行されるCRVの量が減少していく設計になっています。
 
 ### VotingEscrow.sol
-VotingEscrow.solはCurve DAOで投票権を管理するコントラクトです。ユーザーはCRVトークンを一定期間ロックすることで、期間に応じた量の転送不可能なveCRVトークンを獲得します。これにより、Curve DAO内の投票に影響を与えることができます。ロック期間は最長4年で、長期ロックするほど大きな投票権が得られます。
+
+VotingEscrow.solは、ユーザーがCRVをロックして投票権を獲得するためのコントラクトです。ユーザーは、CRVを一定期間（最大4年）ロックすることで、ロック期間に応じたveCRV（vote-escrowed CRV）を受け取ります。veCRVは、CRVをアンロックするまでの間、投票権を持ちます。ロック期間が長いほど、より多くのveCRVを獲得できます。
 
 ### GaugeController.sol
-GaugeControllerは流動性プールごとに設定されるゲージを管理し、CRVトークンの報酬分配を決定します。ユーザーは投票権を使って特定の流動性ゲージに投票し、その結果に基づいて報酬の配分が行われます。
+
+GaugeController.solは、各流動性プールに対してゲージ（Gauge）を管理し、CRVの分配を制御するコントラクトです。ゲージは、流動性プールごとに設定され、そのプールに割り当てられるCRV報酬の量を決定します。veCRVを持つユーザーは、どのゲージにどれだけのCRVを割り当てるかを投票することができます。
 
 ### LiquidityGauge.sol
-LiquidityGaugeコントラクトでは、ユーザーが流動性を提供するとCRVトークンの報酬を受け取る仕組みが実装されています。このコントラクトは提供された流動性の量と期間に基づいて報酬を計算し、Minterコントラクトを通じて報酬を配布します。
+
+LiquidityGauge.solは、ユーザーが流動性を提供するとCRV報酬を受け取ることができるコントラクトです。ユーザーは、流動性プールのLPトークンをLiquidityGaugeにステークすることで、CRV報酬を獲得します。各ユーザーの報酬額は、ステークしたLPトークンの量とゲージの重みに基づいて計算されます。
 
 ### Minter.sol
-Minterコントラクトは、流動性提供に対する報酬としてCRVトークンを発行する役割を担います。ユーザーはこのコントラクトを通じて、流動性提供の対価としてCRVトークンを請求することが可能です。
+
+Minter.solは、LiquidityGaugeからのリクエストに基づいてCRVを鋳造するコントラクトです。LiquidityGaugeは、ユーザーにCRV報酬を配布するために、Minterに新しいCRVの鋳造をリクエストします。
 
 ### FeeDistributor.sol
-FeeDistributorコントラクトは、Curve DAOの報酬分配システムを管理するためのスマートコントラクトです。このコントラクトは、ユーザーがVotingEscrowにてロックしたCRVトークンに基づいて報酬を分配します。報酬は週単位で計算され、分配されるトークンの量は、その週のCRVロック総量に比例して決定されます。
+
+FeeDistributor.solは、Curveプロトコルが徴収する手数料の50%をveCRVホルダーに分配するコントラクトです。手数料は、3CRVトークン（Curve's 3pool LP token）で回収され、毎週veCRVホルダーに分配されます。各ユーザーの受け取り額は、そのユーザーのveCRVの量が全体のveCRVの量に占める割合に基づいて計算されます。
+
 
 ## 用語解説
 
 ### エポック（Epoch）
+
 システムの状態が更新される特定の時点を指します。これは、ユーザーの投票権や流動性ゲージの状態が変更される際に、その変更を記録するために使用されるタイムスタンプです。エポックは、システム全体の歴史的な状態を追跡し、時間経過に伴う変更を管理するのに役立ちます。
 
 ### スロープ（Slope）
+
 ユーザーの投票力が時間とともにどのように減少するかを示す指標です。具体的には、ユーザーがトークンをロックするときに設定され、ロックされたトークンの量とロック期間に基づいて計算されます。スロープは、投票権の減少率を表し、時間経過に伴う投票重みの変化を定量化します。
 
 ### チェックポイント（Checkpoint）
+
 ユーザーのトークンロックや投票権の変更点を記録するために使用されるマーカーです。これは、ユーザーがトークンをロックしたり、ロックを解除したり、またはロック期間を変更したりする際に、その変更を正確に追跡するために重要です。チェックポイントを通じて、システムは過去の任意の時点でのユーザーの投票権を正確に計算することができます。
 
 ### バイアス（Bias）
+
 特定の時点でのユーザーの投票重みを意味します。これは、ユーザーがトークンをロックすることで得られる初期の投票力を表し、時間が経過するにつれて徐々に減少します（スロープによって決定される）。バイアスは、ユーザーの投票権の現在の強度を示します。
 
 
 ## VotingEscrow コントラクト解説
 
-ここからソースコードを参照しながら具体的な解説をして行こうかと思います。veCRVの仕組みの根幹となる、VotingEscrow.solの重要な部分のソースコードを参照しながら解説を行っていきます。
+ここからソースコードを参照しながら、VotingEscrowコントラクトの重要な部分について詳しく解説していきます。
 
-### ユーザーが操作する関数
-指定された`VotingEscrow`コントラクト内の各ファンクションの簡単な解説です。
+### ユーザーが操作する主要な関数
 
 1. **`createLock(uint256 value_, uint256 unlockTime_)`**:
     - ユーザーが指定した量のトークン（`value_`）を特定の期間（`unlockTime_`まで）ロックするために使用されます。
     - ユーザーは新しいロックを作成する際にこの関数を呼び出し、トークンをVotingEscrowコントラクトに預けます。
+    - ロック期間は週単位で丸められ、最大4年間のロックが可能です。
 
-2. **`depositFor(address addr_, uint256 value_)`**:
-    - 他のユーザー（`addr_`）のためにトークン（`value_`）をロックするために使用されます。
-    - この関数を使用することで、ユーザーは他のアカウントに代わってトークンをロックし、そのアカウントの投票権を増やすことができます。
-
-3. **`increaseAmount(uint256 value_)`**:
+2. **`increaseAmount(uint256 value_)`**:
     - 既存のロックにトークン（`value_`）を追加するために使用されます。
     - ユーザーはこの関数を通じて、ロック期間を変更せずにロックされているトークンの量を増やすことができます。
+    - ロック期間が過ぎているロックには追加できません。
 
-4. **`increaseUnlockTime(uint256 unlockTime_)`**:
+3. **`increaseUnlockTime(uint256 unlockTime_)`**:
     - 既存のロックの期間を延長するために使用されます。
     - ユーザーはこの関数を呼び出すことで、ロックされたトークンが解放される時刻（`unlockTime_`）を延長することができます。
+    - 新しいロック期間は、現在のロック期間より長くなければならず、最大4年間までです。
 
-5. **`withdraw()`**:
-    - ユーザーがロックされたトークンを解放し、それを引き出すために使用されます。
+4. **`withdraw()`**:
+    - ユーザーがロックされたトークンを解放し、引き出すために使用されます。
     - ロック期間が終了した後にのみ、ユーザーはこの関数を呼び出してトークンを引き出すことができます。
 
+これらの関数は、ユーザーによって直接呼び出されるもので、トークンのロック状態を変更します。
 
-これらの関数はユーザーによって実行され、チェックポイント(_checkpoint)処理を呼び出され、値の変更が行われます。
-次は、チェックポイントを説明する前に、どのようにトークンロック情報がコントラクトに保存されているか説明します。
-
-### グローバル変数
+### コントラクトで使用される主要なデータ構造
 
 #### `Point`
 ```solidity
 struct Point {
     int128 bias;
-    int128 slope;
-    uint256 ts;
-    uint256 blk;
+    int128 slope; // - dweight / dt
+    uint256 ts; //timestamp
+    uint256 blk; // block
 }
 ```
-`Point`構造体はユーザーの投票重みを表現するために使用されます。
-ここでの`bias`は特定の時点での投票重みを意味し、`slope`は時間経過による投票重みの減少率を表します。`ts`はタイムスタンプ、`blk`はブロック番号を指します。
+`Point`構造体は、ある時点でのトークンの総量（`bias`）とその変化率（`slope`）を表現するために使用されます。`ts`はタイムスタンプ、`blk`はブロック番号を表します。
 
-#### `epoch`
-- `epoch`は、グローバルなチェックポイント（時点）の数を追跡します。
-- これは、コントラクト全体の状態が更新されるたびに増加します。例えば、ユーザーがトークンをロックしたり、解除したりするたびに、新しい`epoch`が作成されます。
-- `epoch`は、コントラクトの状態を記録し、過去の任意の時点での全体の投票権を計算するために使用されます。
+#### `LockedBalance`
+```solidity
+struct LockedBalance {
+    int128 amount;
+    uint256 end;
+}
+```
+`LockedBalance`構造体は、各ユーザーのロック状態を表現するために使用されます。`amount`はロックされているトークンの量、`end`はロック期間の終了時刻を表します。
 
-#### `userPointEpoch`
-- `userPointEpoch`は、個々のユーザーに関連するチェックポイントの数を追跡します。
-- これは、ユーザーがトークンをロックしたり、解除したりするたびに増加します。
-- 各ユーザーの`userPointEpoch`は、そのユーザーの投票権がどのように時間とともに変化するかを示す個別のタイムラインを提供します。
+### 主要な状態変数
 
-#### `mapping`
-ユーザーアドレス、`epoch`、`userPointEpoch`をKeyとしてmappingでPoint構造体はコントラクトに保存されています。
+#### `epochʻ
+- グローバルなチェックポイント（時点）の数を追跡します。
+- コントラクトの状態が更新されるたびに増加します。
 
-##### epoch -> Point
+#### `pointHistory`
 ```solidity
 mapping(uint256 => Point) public pointHistory;
 ```
-##### UserAddress -> userPointEpoch ->Point
+- グローバルな投票パワーの履歴を保存するマッピングです。
+- `epoch`をキーとして、各時点での`Point`（`bias`と`slope`）を保存します。
+
+#### `userPointHistory`
 ```solidity
 mapping(address => mapping(uint256 => Point)) public userPointHistory;
 ```
-##### UserAddress -> userPointEpoch
-```solidity
-mapping(address => uint256) public userPointEpoch;
-```
+- 各ユーザーの投票パワーの履歴を保存するマッピングです。
+- ユーザーのアドレスと`epoch`をキーとして、各時点での`Point`（`bias`と`slope`）を保存します。
 
-#### slope
-
-ユーザーの投票力（投票重み）が時間経過に伴ってどのように減少するかを追跡するためのマッピングです。このマッピングは、特定の時点での投票力の減少率（スロープの変化）を記録します。
-
-##### epoch -> slope
+#### `slopeChanges`
 ```solidity
 mapping(uint256 => int128) public slopeChanges;
 ```
+- 特定の時点で発生するスロープの変更を保存するマッピングです。
+- 時刻をキーとして、その時点でのスロープの変化量を保存します。
 
-
-### `_checkpoint`の解説
+### `_checkpoint`関数の解説
 
 ```solidity
 function _checkpoint(
     address addr_,
     LockedBalance memory oldLocked_,
     LockedBalance memory newLocked_
-) internal 
+) internal
 ```
 
-`_checkpoint`関数は、VotingEscrowコントラクト内で、ユーザーのトークンロック状況の変更を記録するために使用されます。主に、ユーザーがトークンをロックしたり、ロック期間を変更したり、ロックを解除したりする際に呼び出されます。internalで内部的に使用され、ユーザーのロック状況の変更毎に現在の投票重みを更新します。
-この関数内の処理を順を追って見ていきます。
+`_checkpoint`関数は、ユーザーのロック状態が変更されたときに呼び出され、グローバルとユーザーの投票パワーの履歴を更新します。
 
+主な処理の流れは以下の通りです：
 
-1. **既存のロック情報の計算**:
-   - `oldLocked_`に基づいて、ユーザーの既存のロック状態を表す`Point`構造体（`_uOld`）の`slope`（傾き）と`bias`（バイアス）を計算します。
-   - `slope`は、ロックされたトークン量を最大ロック可能期間（`MAXTIME`）で割った値です。
-   - `bias`は、`slope`にロック終了までの残り時間を乗じた値です。
+1. 古いロック状態と新しいロック状態から、`slope`と`bias`を計算します。
+2. グローバルな`slope`の変更を読み取ります。
+3. グローバルな投票パワーの履歴を更新します。
+   - 現在のブロック時刻まで、1週間ごとに`Point`を作成し、`pointHistory`に保存します。
+   - 各`Point`では、前の`Point`からの`slope`と`bias`の変化を反映させます。
+4. ユーザーの投票パワーの履歴を更新します。
+   - ユーザーの`slope`と`bias`を更新し、`userPointHistory`に保存します。
+   - ロック期間の終了時に発生する`slope`の変更を、`slopeChanges`に記録します。
 
-```solidity
-if (oldLocked_.end > block.timestamp && oldLocked_.amount > 0) {
-    unchecked {
-        _uOld.slope = int128(oldLocked_.amount / int256(MAXTIME));
-    }
-    _uOld.bias =
-        _uOld.slope *
-        int128(uint128(oldLocked_.end - block.timestamp));
-}
-```
+この関数によって、グローバルとユーザーの投票パワーの履歴が正確に管理されます。これにより、任意の時点での投票パワーを効率的に計算することが可能になります。
 
-2. **新しいロック情報の計算**:
-   - 同様に、`newLocked_`に基づいて、ユーザーの新しいロック状態を表す`Point`構造体（`_uNew`）の`slope`と`bias`を計算します。
+### 投票パワーの計算
 
-```solidity
-if (newLocked_.end > block.timestamp && newLocked_.amount > 0) {
-    unchecked {
-        _uNew.slope = int128(
-            uint128(newLocked_.amount) / uint128(MAXTIME)
-        );
-    }
-    _uNew.bias =
-        _uNew.slope *
-        int128(uint128(newLocked_.end - block.timestamp));
-}
-```
+VotingEscrowコントラクトでは、ユーザーの投票パワーを以下のように計算します：
 
-3. **スロープの変化の読み取り**:
-   - `slopeChanges`マッピングを参照して、既存のロック終了時点（`oldLocked_.end`）と新しいロック終了時点（`newLocked_.end`）で予定されているスロープの変化を取得します。
-   - これは、ロックされたトークンの減少率が時間とともにどのように変化するかを反映するために使用されます。
+1. ユーザーの現在の`Point`を取得します。
+2. 現在のブロック時刻と`Point`の`ts`の差分を計算します。
+3. `Point`の`bias`から、`slope`と時間差分の積を減算します。
+4. 結果が負の場合は0に切り上げます。
 
-```solidity
-_oldDSlope = slopeChanges[oldLocked_.end];
-if (newLocked_.end != 0) {
-    if (newLocked_.end == oldLocked_.end) {
-        _newDSlope = _oldDSlope;
-    } else {
-        _newDSlope = slopeChanges[newLocked_.end];
-    }
-}
-```
+この計算は、`balanceOf`関数や`balanceOfAt`関数内で行われ、指定された時点でのユーザーの投票パワーを返します。
 
-4. **最新の`Point`の初期化と更新**:
-    - 最初に、`_lastPoint`という新しい`Point`構造体を作成し、初期値として現在のブロックタイムスタンプ（`block.timestamp`）とブロック番号（`block.number`）を設定します。
-    - もし現在のエポック（`_epoch`）が0より大きい場合、`_lastPoint`は`pointHistory`マッピングから最新の`Point`情報（バイアス、スロープ、タイムスタンプ、ブロック番号）を取得して更新します。
-```solidity
-Point memory _lastPoint = Point({
-    bias: 0,
-    slope: 0,
-    ts: block.timestamp,
-    blk: block.number
-});
-if (_epoch > 0) {
-    _lastPoint = Point({
-        bias: pointHistory[_epoch].bias,
-        slope: pointHistory[_epoch].slope,
-        ts: pointHistory[_epoch].ts,
-        blk: pointHistory[_epoch].blk
-    });
-}
-uint256 _lastCheckpoint = _lastPoint.ts;
-```
+また、グローバルな投票パワーの合計値は、`totalSupply`関数や`totalSupplyAt`関数で計算されます。これらの関数では、指定された時点に対応する`epoch`を二分探索で見つけ、そこから線形補間を行うことで任意の時点での合計値を求めています。
 
+### まとめ
 
-5. **`_initialLastPoint`の作成**:
-    - `_lastPoint`のコピーとして`_initialLastPoint`を作成します。このステップは、後にブロック番号を計算するための基準点として使用されます。
-```solidity
-Point memory _initialLastPoint = Point({
-    bias: _lastPoint.bias,
-    slope: _lastPoint.slope,
-    ts: _lastPoint.ts,
-    blk: _lastPoint.blk
-});
+VotingEscrowコントラクトは、ユーザーがトークンをロックすることで投票パワーを獲得し、ガバナンスに参加できる仕組みを提供します。
 
-```
+コントラクトでは、グローバルとユーザーごとの投票パワーの履歴が`Point`構造体の形で保存され、`_checkpoint`関数によって更新されます。これにより、任意の時点での投票パワーを効率的に計算することが可能になります。
 
-6. **ブロックスロープの計算**:
-    - 現在のタイムスタンプが`_lastPoint`のタイムスタンプより新しい場合、ブロックスロープ（`_blockSlope`）を計算します。これは、ブロック番号の増加率をタイムスタンプの増加率で割ったもので、ブロック間隔の平均速度を示します。
+ユーザーは、`createLock`、`increaseAmount`、`increaseUnlockTime`、`withdraw`などの関数を呼び出すことで、自分のトークンをロックしたり、ロック状態を変更したりすることができます。
 
-```solidity
-uint256 _blockSlope = 0;
-if (block.timestamp > _lastPoint.ts) {
-    _blockSlope =
-        (MULTIPLIER * (block.number - _lastPoint.blk)) /
-        (block.timestamp - _lastPoint.ts);
-}
-```
-
-7. **週単位での履歴の更新**:
-    - `_ti`は、計算の基準となる時間を保持します。この値は、最後のチェックポイント（`_lastCheckpoint`）から週単位に丸められています。
-    - `_ti`に一週間ごとに時間を加算し、それぞれの週で投票パワーがどのように変化するかを計算します。このループは、最大255回実行されるか、`_ti`が現在のブロックタイムスタンプに達するまで続けられます。
-
-```solidity
-uint256 _ti;
-unchecked {
-    _ti = (_lastCheckpoint / WEEK) * WEEK;
-}
-
-for (uint256 i; i < 255; ) {
-    _ti += WEEK;
-    int128 _dSlope = 0;
-    if (_ti > block.timestamp) {
-        _ti = block.timestamp;
-    } else {
-        _dSlope = slopeChanges[_ti];
-    }
-```
-
-8. **投票パワーの更新**:
-    - 各週で、`_lastPoint`の`bias`と`slope`（投票パワーの傾斜）が更新されます。これは、時間経過による投票パワーの減少を反映しています。
-    - `slopeChanges`マッピングから取得された`_dSlope`（スロープの変化量）を使用して、`_lastPoint`の`slope`を更新します。
-```solidity
-    _lastPoint.bias -=
-        _lastPoint.slope *
-        int128(uint128(_ti) - uint128(_lastCheckpoint));
-    _lastPoint.slope += _dSlope;
-
-    if (_lastPoint.bias < 0) {
-        _lastPoint.bias = 0;
-    }
-    if (_lastPoint.slope < 0) {
-        _lastPoint.slope = 0;
-    }
-```
-
-
-9. **ブロック番号の計算と記録**:
-    - 各更新時点でのブロック番号は、`_initialLastPoint`からのブロック間隔とタイムスタンプの増加率を基に推定されます。
-    - これにより、将来の時点での投票パワーを計算する際の正確な基準点が確立されます。
-
-```solidity
-    _lastCheckpoint = _ti;
-    _lastPoint.ts = _ti;
-    _lastPoint.blk =
-        _initialLastPoint.blk +
-        (_blockSlope * (_ti - _initialLastPoint.ts)) /
-        MULTIPLIER;
-
-```
-
-10. **エポックのインクリメントと履歴の保存**:
-    - ループの各反復後に、エポック（`_epoch`）を1増加させ、更新された`_lastPoint`を`pointHistory`マッピングに保存します。
-
-```solidity
-    _epoch += 1;
-
-    if (_ti == block.timestamp) {
-        _lastPoint.blk = block.number;
-        break;
-    } else {
-        pointHistory[_epoch] = Point({
-            bias: _lastPoint.bias,
-            slope: _lastPoint.slope,
-            ts: _lastPoint.ts,
-            blk: _lastPoint.blk
-        });
-    }
-    unchecked {
-        ++i;
-    }
-}
-```
-
-この関数は、VotingEscrowコントラクトの核となる部分であり、ユーザーの投票権がどのように時間とともに変化するかを正確に追跡するために重要です。投票重みの計算と更新は、Curve DAO内での投票とガバナンスにおいて中心的な役割を果たします。
+VotingEscrowコントラクトは、Ve tokenモデルの中核をなす重要な部分であり、DeFiプロトコルのガバナンスを支える基盤となっています。
 
 ## CRV コントラクト解説
 
