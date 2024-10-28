@@ -19,6 +19,7 @@ async function deployContracts() {
   const Token = await ethers.getContractFactory("CRV");
   const VotingEscrow = await ethers.getContractFactory("VotingEscrow");
   const GaugeController = await ethers.getContractFactory("GaugeController");
+  const GaugeControllerNoType = await ethers.getContractFactory("GaugeControllerNoType");
   const LiquidityGauge = await ethers.getContractFactory("LiquidityGaugeV6");
   const TestLP = await ethers.getContractFactory("TestLP");
   const Minter = await ethers.getContractFactory("Minter");
@@ -32,6 +33,10 @@ async function deployContracts() {
     "v1"
   );
   const gaugeController = await GaugeController.deploy(
+    token.address,
+    votingEscrow.address
+  );
+  const gaugeControllerNoType = await GaugeControllerNoType.deploy(
     token.address,
     votingEscrow.address
   );
@@ -57,6 +62,7 @@ async function deployContracts() {
     token,
     votingEscrow,
     gaugeController,
+    gaugeControllerNoType,
     mockLpToken,
     minter,
     threeGauges: [lg1.address, lg2.address, lg3.address],
